@@ -1,15 +1,18 @@
 import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import VideosList from './components/VideosList/VideosList';
 import VideosContextProvider from './contexts/videosContext';
 
 const App = () => {
   return (
     <VideosContextProvider>
-      {/* components */}
-      <VideosList />
-      {/* header
-            section
-            footer */}
+      <BrowserRouter>
+        <h1>Header</h1>
+        <Routes>
+          <Route path="/" element={<VideosList />} />
+        </Routes>
+        <h1>Footer</h1>
+      </BrowserRouter>
     </VideosContextProvider>
   );
 };
