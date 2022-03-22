@@ -14,7 +14,8 @@ export const videosContext = React.createContext()
 const API = "http://localhost:8000/videos"
 // начальное состояние, чтоб позже могли сохранить данные
 const INIT_STATE = {
-    videos: []
+    videos: [],
+    oneVideo: null
 }
 // reducer - это функция, которая будет менять INIT_STATE
 // action - это объект с ключами type (то действие, которое выполняется), payload (данные)
@@ -27,7 +28,11 @@ const reducer = (state = INIT_STATE, action) => {
         case "GET_VIDEOS":
             return {
                 ...state, videos: action.payload.data
-            }
+            };
+        case "GET_ONE_VIDEO":
+            return {
+                ...state, oneVideo: action.payload.data
+            };
         default:
             return state
     }
@@ -48,11 +53,32 @@ const VideosContextProvider = ({ children }) => {
         // API + "/" + id
         getAllVideos()
     }
+    async function addVideo(newProduct) {
+        await axios.post(API, newProduct)
+        getAllVideos()
+    }
+    async function getOneVideo(id) {
+        let result = await axios.get(`${API}/${id}`)
+        // console.log(result)
+        dispatch({
+            type: "GET_ONE_VIDEO",
+            payload: result
+        })
+    }
+
+    async function updateVideo(id, editedVideo) {
+        await axios.patch(`${API}/${id}`, editedVideo)
+        getAllVideos()
+    }
     return (
         <videosContext.Provider value={{
             videos: state.videos,
+            oneVideo: state.oneVideo,
             getAllVideos,
-            deleteVideo
+            deleteVideo,
+            addVideo,
+            getOneVideo,
+            updateVideo
         }}>
             {children}
         </videosContext.Provider>
